@@ -2,10 +2,7 @@ require "tencent/xinge/version"
 
 module Tencent
   module Xinge
-    class Sender
-    	def self.test(test)
-	    	puts test
-	    end
-    end
+    autoload :Client, 'tencent/xinge/client'
+  	autoload :Request, 'tencent/xinge/request'
   end
 end
