@@ -6,7 +6,7 @@ module Tencent
 	module Xinge
 		class Request
 			include HTTParty
-			base_uri 'openapi.xg.qq.com'
+			base_uri 'http://openapi.xg.qq.com'
 			HTTP_METHOD = :post
 
 	    attr_reader :client
@@ -16,18 +16,18 @@ module Tencent
 	    end
 
 	    def fetch(params = {})
-	      params.merge!({apikey: @client.api_key,
+	      params.merge!({access_id: @client.access_id,
 	                     timestamp: Time.now.to_i})
 	      sign = generate_sign(params)
 	      params.merge!({ sign: sign })
 
 	      options = { body: params }
-	      self.class.post(HTTP_METHOD, "#{@client.api_url}, options)
+	      self.class.send(HTTP_METHOD,"#{@client.api_url.sub("http://openapi.xg.qq.com","")}", options)
 	    end
 
 	    def generate_sign(sign_params)
 	      params_string = sign_params.sort.map{ |h| h.join('=') }.join
-	      gather = "#{HTTP_METHOD.to_s.upcase}#{@client.api_url}/#{@client.resource}#{params_string}#{@client.secret_key}"
+	      gather = "#{HTTP_METHOD.to_s.upcase}#{@client.api_url.sub("http://","")}/#{params_string}#{@client.secret_key}"
 
 	      Digest::MD5.hexdigest(URI::encode_www_form_component(gather))
 	    end
